@@ -10,7 +10,7 @@ connectMongo();
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("api working");
+  res.send("api working perfectly");
 });
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
