@@ -32,9 +32,11 @@ const bookAppointment = async (req, res) => {
       if (patientSaved) {
         return res
           .status(201)
-          .json({ message: "Appointment booked successfully" });
+          .json({ success: true, message: "Appointment booked successfully" });
       } else {
-        return res.status(400).json({ message: "Failed to book appointment" });
+        return res
+          .status(400)
+          .json({ success: false, message: "Failed to book appointment" });
       }
     }
   } catch (error) {
