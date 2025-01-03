@@ -5,7 +5,7 @@ const connectMongo = async () => {
     mongoose.connection.on("connected", () =>
       console.log("Database Connected")
     );
-    await mongoose.connect(`${process.env.MONGODB_URI}/dental_clinic`);
+    await mongoose.connect(`${process.env.MONGODB_URI}`);
   } catch (error) {
     console.log("Error in connectMongo.js", error);
   }
