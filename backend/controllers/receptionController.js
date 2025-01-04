@@ -44,4 +44,23 @@ const bookAppointment = async (req, res) => {
   }
 };
 
-export default bookAppointment;
+const getPatient = async (req, res) => {
+  try {
+    // YYYY/MM/DD- date format
+    const { date } = req.body;
+    const patient = await appointmentSchema.find({ date });
+    if (patient.length > 0) {
+      return res.status(200).json({ success: true, patient });
+    } else if (patient.length === 0) {
+      return res
+        .status(200)
+        .json({ success: true, message: "No patient found" });
+    } else {
+      return res.status(400).json({ success: false, message: "Network error" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export { bookAppointment, getPatient };
