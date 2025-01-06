@@ -6,6 +6,6 @@ import {
 const receptionRouter = express.Router();
 
 receptionRouter.post("/book-appointment", bookAppointment);
-receptionRouter.get("/get-patient", getPatient);
+receptionRouter.post("/get-patient", getPatient);
 
 export default receptionRouter;

@@ -48,6 +48,8 @@ const getPatient = async (req, res) => {
   try {
     // YYYY/MM/DD- date format
     const { date } = req.body;
+    console.log("Date is : ",date);
+    
     const patient = await appointmentSchema.find({ date });
     if (patient.length > 0) {
       return res.status(200).json({ success: true, patient });
