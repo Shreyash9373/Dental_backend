@@ -14,6 +14,17 @@ const bookAppointment = async (req, res) => {
       prescriptionFile,
     } = req.body;
     console.log(req.body.date);
+    const existingAppointment = await appointmentSchema.findOne({
+      date: date,
+      timeSlot: timeSlot,
+    });
+
+    if (existingAppointment) {
+      return res.status(400).json({
+        success: false,
+        message: "The selected timeslot is already booked for this date.",
+      });
+    }
     if (
       (!fullName, mobileNo, !emailId, !location, !date, !service, !timeSlot)
     ) {
@@ -119,4 +130,49 @@ const updatePatient = async (req, res) => {
   }
 };
 
-export { bookAppointment, getPatient, getEnquiry, updatePatient };
+// Fetch available time slots based on the date
+const getAvailableSlots = async (req, res) => {
+  try {
+    const { date } = req.query;
+
+    // List of all possible time slots
+    const allTimeSlots = [
+      "9:00 AM",
+      "9:30 AM",
+      "10:00 AM",
+      "10:30 AM",
+      "11:00 AM",
+      "11:30 AM",
+      "2:00 PM",
+      "3:00 PM",
+    ];
+
+    // Fetch appointments for the specified date
+    const bookedAppointments = await appointmentSchema
+      .find({ date })
+      .select("timeSlot");
+
+    // Extract already booked slots
+    const bookedTimeSlots = bookedAppointments.map(
+      (appointment) => appointment.timeSlot
+    );
+
+    // Calculate available slots
+    const availableSlots = allTimeSlots.filter(
+      (slot) => !bookedTimeSlots.includes(slot)
+    );
+
+    return res.status(200).json({ availableSlots });
+  } catch (error) {
+    console.error("Error fetching available slots:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+export {
+  bookAppointment,
+  getPatient,
+  getEnquiry,
+  updatePatient,
+  getAvailableSlots,
+};

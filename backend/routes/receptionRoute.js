@@ -4,12 +4,14 @@ import {
   getPatient,
   getEnquiry,
   updatePatient,
+  getAvailableSlots,
 } from "../controllers/receptionController.js";
 const receptionRouter = express.Router();
 
 receptionRouter.post("/book-appointment", bookAppointment);
 receptionRouter.post("/get-patient", getPatient);
 receptionRouter.get("/get-Enquiry", getEnquiry);
-receptionRouter.post("/update-patient", updatePatient);
+receptionRouter.put("/update-patient", updatePatient);
+receptionRouter.get("/available-slots", getAvailableSlots);
 
 export default receptionRouter;
