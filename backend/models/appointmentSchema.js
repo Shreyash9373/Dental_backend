@@ -35,6 +35,11 @@ const appointment = new mongoose.Schema(
       type: String, // This field can store the file URL or path
       required: false, // Optional field
     },
+    status: {
+      type: String,
+      enum: ["pending", "completed", "cancel"], // Allowed values
+      default: "pending",
+    },
   },
   { timestamps: true }
 ); // Adds createdAt and updatedAt fields automatically

@@ -1,4 +1,5 @@
 import appointmentSchema from "../models/appointmentSchema.js";
+import enquirySchema from "../models/enquriySchema.js";
 
 const bookAppointment = async (req, res) => {
   try {
@@ -12,6 +13,7 @@ const bookAppointment = async (req, res) => {
       timeSlot,
       prescriptionFile,
     } = req.body;
+    console.log(req.body.date);
     if (
       (!fullName, mobileNo, !emailId, !location, !date, !service, !timeSlot)
     ) {
@@ -48,9 +50,9 @@ const getPatient = async (req, res) => {
   try {
     // YYYY/MM/DD- date format
     const { date } = req.body;
-    console.log("Date is : ",date);
-    
+    console.log(req.body);
     const patient = await appointmentSchema.find({ date });
+
     if (patient.length > 0) {
       return res.status(200).json({ success: true, patient });
     } else if (patient.length === 0) {
@@ -65,4 +67,56 @@ const getPatient = async (req, res) => {
   }
 };
 
-export { bookAppointment, getPatient };
+const getEnquiry = async (req, res) => {
+  const enquiryData = await enquirySchema.find({});
+  if (enquiryData.length > 0) {
+    return res.status(200).json({ success: true, enquiryData });
+  } else if (enquiryData.length === 0) {
+    return res.status(200).json({ success: true, message: "No Enquiry" });
+  } else {
+    return res.status(400).json({ success: false, message: "Network error" });
+  }
+};
+
+const updatePatient = async (req, res) => {
+  try {
+    const { _id, fullName, mobileNo, service, timeSlot, date, status } =
+      req.body;
+
+    if (
+      !_id ||
+      !fullName ||
+      !mobileNo ||
+      !service ||
+      !timeSlot ||
+      !date ||
+      !status
+    ) {
+      return res.json({ success: false, message: "Data Missing" });
+    }
+
+    const response = await appointmentSchema.findByIdAndUpdate(_id, {
+      _id,
+      fullName,
+      mobileNo,
+      service,
+      timeSlot,
+      date,
+      status,
+    });
+    if (response) {
+      return res
+        .status(200)
+        .json({ success: true, message: "Profile Updated" });
+    } else {
+      return res
+        .status(400)
+        .json({ success: false, message: "Failed to Update" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+export { bookAppointment, getPatient, getEnquiry, updatePatient };
