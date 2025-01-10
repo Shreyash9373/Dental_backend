@@ -10,6 +10,6 @@ const receptionRouter = express.Router();
 receptionRouter.post("/book-appointment", bookAppointment);
 receptionRouter.post("/get-patient", getPatient);
 receptionRouter.get("/get-Enquiry", getEnquiry);
-receptionRouter.post("/update-patient", updatePatient);
+receptionRouter.put("/update-patient", updatePatient);
 
 export default receptionRouter;
