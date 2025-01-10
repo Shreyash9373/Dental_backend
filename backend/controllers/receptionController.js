@@ -14,6 +14,17 @@ const bookAppointment = async (req, res) => {
       prescriptionFile,
     } = req.body;
     console.log(req.body.date);
+    const existingAppointment = await appointmentSchema.findOne({
+      date: date,
+      timeSlot: timeSlot,
+    });
+
+    if (existingAppointment) {
+      return res.status(400).json({
+        success: false,
+        message: "The selected timeslot is already booked for this date.",
+      });
+    }
     if (
       (!fullName, mobileNo, !emailId, !location, !date, !service, !timeSlot)
     ) {
