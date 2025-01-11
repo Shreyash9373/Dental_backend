@@ -31,6 +31,10 @@ const dashboardLoginSchema = new mongoose.Schema(
           "Password must have at least 8 characters, including one uppercase letter, one lowercase letter, one number, and one special character.",
       },
     },
+    role:{
+      type: String,
+      enum: ["doctor", "reception"], // Allowed values
+    },
     refreshToken: {
       type: String,
       default: "",
