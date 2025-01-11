@@ -70,7 +70,7 @@ const login = async (req, res) => {
 };
 
 const register = async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password , role } = req.body;
 
   if (!username || !password) {
     return res.json({ success: false, message: "Username and password are required" });
@@ -84,6 +84,7 @@ const register = async (req, res) => {
   const user = await dashboardLogin.create({
     username,
     password,
+    role,
   });
 
   const createdUser = await dashboardLogin.findById(user._id).select("-password -refreshToken");
