@@ -178,7 +178,7 @@ const changeCurrentPassword = async (req, res) => {
   const checkPassword = await user.isPasswordCorrect(oldPassword);
 
   if (!checkPassword) {
-    return res.json({ success: false, message: "Invalid old password" });
+    return  res.json({ success: false, message: "Invalid old password" });
   }
 
   user.password = newPassword;
