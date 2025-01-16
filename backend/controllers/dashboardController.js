@@ -60,8 +60,8 @@ const login = async (req, res) => {
           username: user.username,
           role: user.role,
         },
-        accesstoken,
-        refreshtoken,
+        accessToken: accesstoken,
+        refreshToken: refreshtoken,
         message: "User logged in successfully",
       });
   } catch (error) {
