@@ -9,6 +9,7 @@ const dashboardLoginSchema = new mongoose.Schema(
       required: [true, "Username is required"],
       trim: true,
       lowercase: true,
+      unique: true,
       validate: {
         validator: function (value) {
           // Regex for validating alphanumeric usernames, 3-30 characters

@@ -13,9 +13,20 @@ import doctorRouter from "./routes/doctorRoute.js";
 
 const app = express();
 const port = process.env.PORT || 4000;
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
+
 
 connectMongo();
-app.use(cors());
+app.use(cors({
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {  // !origin allows requests from non-browser clients (like Postman)
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,  // Allow cookies to be sent/received
+}));
 app.use(express.json());
 app.use(cookieParser()); // for reading and writing cookies in user's browser
 
