@@ -198,8 +198,23 @@ const refreshAccessToken = async (req, res) => {
   }
 };
 
+const addMember = async (req, res) => {
+  const { username, password, role } = req.body;
+  const memberDataFormat = { username, password, role };
+  const saveData = await dashboardLogin.create(memberDataFormat);
+  if (saveData) {
+    return res
+      .status(200)
+      .json({ success: true, message: "Member Added Successfully" });
+  } else {
+    return res
+      .status(500)
+      .json({ success: false, message: "Member not added Successfully" });
+  }
+};
+
 const changeCurrentPassword = async (req, res) => {
-  const { Password, confirmPassword } = req.body;
+  const { username, Password, confirmPassword } = req.body;
 
   if (Password !== confirmPassword) {
     return res.status(400).json({
@@ -234,4 +249,5 @@ export {
   logoutUser,
   refreshAccessToken,
   changeCurrentPassword,
+  addMember,
 };
