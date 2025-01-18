@@ -28,32 +28,23 @@ const checkReception = async (req, res, next) => {
         .json({ success: false, message: "Invalid access token" });
     }
 
-    // Check if the user role is 'reception'
-    if (user.role === "receptionist") {
-      req.user = user; // Attach user data to the request object for further use
-      next();
-    } else {
-      return res
-        .status(403)
-        .json({
-          success: false,
-          message: "Access denied. Not a reception staff member",
-        });
+        // Check if the user role is 'reception'
+        if (user.role === "receptionist") {
+            req.user = user; // Attach user data to the request object for further use
+            next();
+        } else {
+            return res.status(403).json({ success: false, message: "Access denied. Not a reception staff member" });
+        }
+    } catch (error) {
+        console.error("Error in checkReception middleware:", error);
+        if (error.name === "JsonWebTokenError") {
+            return res.status(401).json({ success: false, message: "Invalid token" });
+        } else if (error.name === "TokenExpiredError") {
+            return res.status(401).json({ success: false, message: "Token has expired" });
+        } else {
+            return res.status(500).json({ success: false, message: "Internal server error" });
+        }
     }
-  } catch (error) {
-    console.error("Error in checkReception middleware:", error);
-    if (error.name === "JsonWebTokenError") {
-      return res.status(401).json({ success: false, message: "Invalid token" });
-    } else if (error.name === "TokenExpiredError") {
-      return res
-        .status(401)
-        .json({ success: false, message: "Token has expired" });
-    } else {
-      return res
-        .status(500)
-        .json({ success: false, message: "Internal server error" });
-    }
-  }
 };
 
 export default checkReception;
