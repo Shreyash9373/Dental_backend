@@ -53,6 +53,51 @@ const getEvent = async (req, res) => {
   }
 };
 
+const getSingleEvent = async (req, res) => {
+  const { _id } = req.body;
+  if (!_id) {
+    return res.status(400).json({
+      success: false,
+      message: "Blog ID is required",
+    });
+  }
+  const singleEventResponse = await eventSchema.findById(_id);
+  if (singleEventResponse) {
+    return res.status(200).json({
+      success: true,
+      message: "Event fetched successfully!",
+      singleEventResponse,
+    });
+  } else {
+    return res.status(404).json({
+      success: false,
+      message: "Failed to fetch Event. Please try again.",
+    });
+  }
+};
+const getSingleBlog = async (req, res) => {
+  const { _id } = req.body;
+  if (!_id) {
+    return res.status(400).json({
+      success: false,
+      message: "Blog ID is required",
+    });
+  }
+  const singleBlogResponse = await blogSchema.findById(_id);
+  if (singleBlogResponse) {
+    return res.status(200).json({
+      success: true,
+      message: "Blog fetched successfully!",
+      singleBlogResponse,
+    });
+  } else {
+    return res.status(404).json({
+      success: false,
+      message: "Failed to fetch blog. Please try again.",
+    });
+  }
+};
+
 const getBlog = async (req, res) => {
   try {
     const blogResponse = await blogSchema.find({});
@@ -73,4 +118,4 @@ const getBlog = async (req, res) => {
   }
 };
 
-export { saveEnquiry, getEvent, getBlog };
+export { saveEnquiry, getEvent, getBlog, getSingleEvent, getSingleBlog };

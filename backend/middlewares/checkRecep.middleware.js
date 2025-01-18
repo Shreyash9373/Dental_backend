@@ -1,24 +1,32 @@
 import jwt from "jsonwebtoken";
-import dashboardLogin from "../models/dashboardloginSchema.js"; 
+import dashboardLogin from "../models/dashboardloginSchema.js";
 
 const checkReception = async (req, res, next) => {
-    try {
-        // Extract token from cookies or Authorization header
-        const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
-        
-        if (!token) {
-            return res.status(401).json({ success: false, message: "No token provided" });
-        }
+  try {
+    // Extract token from cookies or Authorization header
+    const token =
+      req.cookies?.accessToken ||
+      req.header("Authorization")?.replace("Bearer ", "");
 
-        // Verify the token
-        const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    if (!token) {
+      return res
+        .status(401)
+        .json({ success: false, message: "No token provided" });
+    }
 
-        // Fetch user details from the database
-        const user = await dashboardLogin.findById(decodedToken?._id).select("-password -refreshToken");
+    // Verify the token
+    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
-        if (!user) {
-            return res.status(401).json({ success: false, message: "Invalid access token" });
-        }
+    // Fetch user details from the database
+    const user = await dashboardLogin
+      .findById(decodedToken?._id)
+      .select("-password -refreshToken");
+
+    if (!user) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid access token" });
+    }
 
         // Check if the user role is 'reception'
         if (user.role === "receptionist") {
