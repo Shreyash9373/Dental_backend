@@ -11,7 +11,7 @@ const bookAppointment = async (req, res) => {
       date,
       service,
       timeSlot,
-      prescriptionFile,
+      photo,
     } = req.body;
     console.log(req.body.date);
     const existingAppointment = await appointmentSchema.findOne({
@@ -38,7 +38,7 @@ const bookAppointment = async (req, res) => {
         date,
         service,
         timeSlot,
-        prescriptionFile,
+        photo,
       };
       const newPatient = new appointmentSchema(patientData);
       const patientSaved = await newPatient.save();
@@ -91,8 +91,17 @@ const getEnquiry = async (req, res) => {
 
 const updatePatient = async (req, res) => {
   try {
-    const { _id, fullName, mobileNo, service, timeSlot, date, status } =
-      req.body;
+    const {
+      _id,
+      fullName,
+      mobileNo,
+      service,
+      timeSlot,
+      date,
+      status,
+      paymentStatus,
+      paymentAmount,
+    } = req.body;
 
     if (
       !_id ||
@@ -114,6 +123,8 @@ const updatePatient = async (req, res) => {
       timeSlot,
       date,
       status,
+      paymentStatus,
+      paymentAmount,
     });
     if (response) {
       return res

@@ -200,7 +200,7 @@ const refreshAccessToken = async (req, res) => {
 
 const addMember = async (req, res) => {
   const { username, password, role } = req.body;
-  const memberDataFormat = { username, password, role };
+  const memberDataFormat = { username, role, password };
   const saveData = await dashboardLogin.create(memberDataFormat);
   if (saveData) {
     return res
