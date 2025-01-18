@@ -9,6 +9,7 @@ const dashboardLoginSchema = new mongoose.Schema(
       required: [true, "Username is required"],
       trim: true,
       lowercase: true,
+      unique: true,
       validate: {
         validator: function (value) {
           // Regex for validating alphanumeric usernames, 3-30 characters
@@ -25,15 +26,17 @@ const dashboardLoginSchema = new mongoose.Schema(
       validate: {
         validator: function (value) {
           // At least 1 uppercase, 1 lowercase, 1 number, and 1 special character
-          return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(value);
+          return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+            value
+          );
         },
         message:
           "Password must have at least 8 characters, including one uppercase letter, one lowercase letter, one number, and one special character.",
       },
     },
-    role:{
+    role: {
       type: String,
-      enum: ["doctor", "reception"], // Allowed values
+      enum: ["doctor", "receptionist"], // Allowed values
     },
     refreshToken: {
       type: String,

@@ -5,6 +5,8 @@ const verifyJwt = async (req, res, next) => {
   try {
     const token =
       req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
+      console.log(token);
+      
 
     if (!token) {
       return res.status(401).json({ success: false, message: "No token provided" });
@@ -17,6 +19,9 @@ const verifyJwt = async (req, res, next) => {
     const user = await dashboardLogin.findById(decodedToken?._id).select(
       "-password -refreshToken"
     );
+
+    console.log(decodedToken);
+    
 
     if (!user) {
       return res.status(401).json({ success: false, message: "Invalid access token" });
