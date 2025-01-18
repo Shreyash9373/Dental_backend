@@ -31,7 +31,7 @@ const appointment = new mongoose.Schema(
       type: String,
       required: true, // You can use predefined slots like "10:00 AM - 10:30 AM"
     },
-    prescriptionFile: {
+    photo: {
       type: String, // This field can store the file URL or path
       required: false, // Optional field
     },
@@ -39,6 +39,15 @@ const appointment = new mongoose.Schema(
       type: String,
       enum: ["pending", "completed", "cancelled"], // Allowed values
       default: "pending",
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "paid"],
+      default: "pending",
+    },
+    paymentAmount: {
+      type: Number,
+      default: 0,
     },
   },
   { timestamps: true }
