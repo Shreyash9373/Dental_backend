@@ -152,7 +152,7 @@ const refreshAccessToken = async (req, res) => {
     req.cookies.refreshToken || req.body.refreshToken;
 
   if (!incommingRefreshToken) {
-    return res.json({ success: false, message: "Unauthorized user request" });
+    return res.status(403).json({ success: false, message: "Unauthorized user request" });
   }
 
   try {
@@ -163,36 +163,39 @@ const refreshAccessToken = async (req, res) => {
     const user = await dashboardLogin.findById(decodedToken?._id);
 
     if (!user) {
-      return res.json({ success: false, message: "Invalid Refresh token" });
+      return res.status(403).json({ success: false, message: "Invalid Refresh token" });
     }
 
     if (incommingRefreshToken !== user?.refreshToken) {
-      return res.json({
+      return res.status(403).json({
         success: false,
         message: "Refresh token is expired or used",
       });
     }
 
-    const { accesstoken, refreshtoken: newrefreshtoken } =
-      await genAccessAndRefreshTokens(user._id);
+    return res.status(201).json({success:true , message:"Valid User"})
 
-    const options = {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Only secure in production
-      sameSite: "strict",
-    };
+   
+    // const { accesstoken, refreshtoken: newrefreshtoken } =
+    //   await genAccessAndRefreshTokens(user._id);
 
-    return res
-      .status(200)
-      .cookie("accessToken", accesstoken, options)
-      .cookie("refreshToken", newrefreshtoken, options)
-      .json({
-        success: true,
-        user: user,
-        accesstoken,
-        refreshToken: newrefreshtoken,
-        message: "User logged-in successfully",
-      });
+    // const options = {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production", // Only secure in production
+    //   sameSite: "strict",
+    // };
+
+    // return res
+    //   .status(200)
+    //   .cookie("accessToken", accesstoken, options)
+    //   .cookie("refreshToken", newrefreshtoken, options)
+    //   .json({
+    //     success: true,
+    //     user: user,
+    //     accessToken:accesstoken,
+    //     refreshToken: newrefreshtoken,
+    //     message: "User logged-in successfully",
+    //   });
   } catch (error) {
     return res.json({ success: false, message: "Invalid refresh token" });
   }
