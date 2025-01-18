@@ -15,13 +15,18 @@ const dashboardRouter = express.Router();
 
 dashboardRouter.post("/login", AsyncErrorHandler(login)); // Corrected the router name
 dashboardRouter.post("/register", AsyncErrorHandler(register));
-dashboardRouter.post("/logout", verifyJwt, logoutUser);
-dashboardRouter.post("/refreshToken", refreshAccessToken);
-dashboardRouter.post("/addMember", AsyncErrorHandler(addMember));
+dashboardRouter.post("/logout", verifyJwt, AsyncErrorHandler(logoutUser));
+dashboardRouter.post("/refreshToken", AsyncErrorHandler(refreshAccessToken));
+dashboardRouter.post(
+  "/addMember",
+  verifyJwt,
+  checkDoctor,
+  AsyncErrorHandler(addMember)
+);
 dashboardRouter.post(
   "/change-password",
   verifyJwt,
   checkDoctor,
-  changeCurrentPassword
+  AsyncErrorHandler(changeCurrentPassword)
 );
 export default dashboardRouter;
