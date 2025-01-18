@@ -21,7 +21,7 @@ const checkReception = async (req, res, next) => {
         }
 
         // Check if the user role is 'reception'
-        if (user.role === "reception") {
+        if (user.role === "receptionist") {
             req.user = user; // Attach user data to the request object for further use
             next();
         } else {

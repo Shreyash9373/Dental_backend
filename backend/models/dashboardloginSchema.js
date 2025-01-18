@@ -34,7 +34,7 @@ const dashboardLoginSchema = new mongoose.Schema(
     },
     role:{
       type: String,
-      enum: ["doctor", "reception"], // Allowed values
+      enum: ["doctor", "receptionist"], // Allowed values
     },
     refreshToken: {
       type: String,
