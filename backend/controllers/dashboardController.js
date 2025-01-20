@@ -152,7 +152,9 @@ const refreshAccessToken = async (req, res) => {
     req.cookies.refreshToken || req.body.refreshToken;
 
   if (!incommingRefreshToken) {
-    return res.status(403).json({ success: false, message: "Unauthorized user request" });
+    return res
+      .status(403)
+      .json({ success: false, message: "Unauthorized user request" });
   }
 
   try {
@@ -163,7 +165,9 @@ const refreshAccessToken = async (req, res) => {
     const user = await dashboardLogin.findById(decodedToken?._id);
 
     if (!user) {
-      return res.status(403).json({ success: false, message: "Invalid Refresh token" });
+      return res
+        .status(403)
+        .json({ success: false, message: "Invalid Refresh token" });
     }
 
     if (incommingRefreshToken !== user?.refreshToken) {
@@ -173,9 +177,13 @@ const refreshAccessToken = async (req, res) => {
       });
     }
 
-    return res.status(201).json({success:true , message:"Valid User"})
+    return res.status(201).json({
+      username: user.username,
+      role: user.role,
+      success: true,
+      message: "Valid User",
+    });
 
-   
     // const { accesstoken, refreshtoken: newrefreshtoken } =
     //   await genAccessAndRefreshTokens(user._id);
 
