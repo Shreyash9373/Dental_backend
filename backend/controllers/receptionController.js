@@ -5,6 +5,7 @@ const bookAppointment = async (req, res) => {
   try {
     const {
       fullName,
+      age,
       mobileNo,
       emailId,
       location,
@@ -26,7 +27,14 @@ const bookAppointment = async (req, res) => {
       });
     }
     if (
-      (!fullName, mobileNo, !emailId, !location, !date, !service, !timeSlot)
+      (!fullName,
+      mobileNo,
+      !emailId,
+      !location,
+      !date,
+      !service,
+      !timeSlot,
+      !age)
     ) {
       return res.status(400).json({ message: "Please fill all the fields" });
     } else {
@@ -39,6 +47,7 @@ const bookAppointment = async (req, res) => {
         service,
         timeSlot,
         photo,
+        age,
       };
       const newPatient = new appointmentSchema(patientData);
       const patientSaved = await newPatient.save();

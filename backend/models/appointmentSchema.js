@@ -15,6 +15,10 @@ const appointment = new mongoose.Schema(
       required: true,
       match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, // Ensures a valid email format
     },
+    age: {
+      type: Number,
+      required: true,
+    },
     location: {
       type: String,
       required: true,
