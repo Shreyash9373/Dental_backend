@@ -1,5 +1,7 @@
 import jwt from "jsonwebtoken"; // Missing import for jwt
 import dashboardLogin from "../models/dashboardloginSchema.js";
+import cookieOptions from "../constants.js";
+
 
 const genAccessAndRefreshTokens = async (userId) => {
   try {
@@ -51,16 +53,14 @@ const login = async (req, res) => {
     );
 
     // Set cookies with tokens
-    const options = {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Only secure in production
-      sameSite: "strict",
-    };
+    const accessTokenOptions = cookieOptions('access');
+    const refreshTokenOptions = cookieOptions('refresh');
+
 
     return res
       .status(200)
-      .cookie("accessToken", accesstoken, options)
-      .cookie("refreshToken", refreshtoken, options)
+      .cookie("accessToken", accesstoken, accessTokenOptions)
+      .cookie("refreshToken", refreshtoken, refreshTokenOptions)
       .json({
         success: true,
         user: {
