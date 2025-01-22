@@ -12,8 +12,8 @@ import { errorHandler } from "./middlewares/error.middleware.js";
 import doctorRouter from "./routes/doctorRoute.js";
 
 const app = express();
-const port = process.env.PORT || 4000;
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
+const port = process.env.BACKEND_URI || 4000;
+const allowedOrigins = ['http://localhost:5173',  'http://147.93.30.210' ,  'http://localhost:5174'];
 
 
 connectMongo();
