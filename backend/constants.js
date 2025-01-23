@@ -13,7 +13,7 @@ const cookieOptions = (tokenType) => {
     return {
       httpOnly: true, // Ensures the cookie is only accessible via HTTP(S), not JavaScript
       secure: process.env.NODE_ENV === 'production', // Sends cookie over HTTPS in production
-      sameSite: 'strict', // Prevents CSRF attacks
+      sameSite: 'lax', // Prevents CSRF attacks
       maxAge: maxAgeValues[tokenType], // Sets the expiration time based on the token type
     };
   };

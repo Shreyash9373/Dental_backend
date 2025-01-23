@@ -14,12 +14,9 @@ import doctorRouter from "./routes/doctorRoute.js";
 
 const app = express();
 const port = 4000;
+
+
 const allowedOrigins = ['http://localhost:5173',  'http://147.93.30.210' ,  'http://localhost:5174'];
-
-
-connectMongo();
-app.use(bodyParser.json()); // for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })); 
 
 app.use(cors({
   origin: (origin, callback) => {
@@ -31,6 +28,12 @@ app.use(cors({
   },
   credentials: true,  // Allow cookies to be sent/received
 }));
+
+connectMongo();
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); 
+
+
 app.use(express.json());
 app.use(cookieParser()); // for reading and writing cookies in user's browser
 
