@@ -7,6 +7,7 @@ import patientRouter from "./routes/patientRoute.js";
 import cookieParser from "cookie-parser";
 import dashboardRouter from "./routes/dashboardRoute.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
+import bodyParser from "body-parser"; // Import body-parser
 
 
 import doctorRouter from "./routes/doctorRoute.js";
@@ -17,6 +18,9 @@ const allowedOrigins = ['http://localhost:5173',  'http://147.93.30.210' ,  'htt
 
 
 connectMongo();
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); 
+
 app.use(cors({
   origin: (origin, callback) => {
     if (allowedOrigins.includes(origin) || !origin) {  // !origin allows requests from non-browser clients (like Postman)
