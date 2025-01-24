@@ -38,7 +38,7 @@ app.use(express.json());
 app.use(cookieParser()); // for reading and writing cookies in user's browser
 
 app.get("/", (req, res) => {
-  res.send("api working perfectly");
+  res.send("api working perfectly version 1");
 });
 
 //api endpoints
