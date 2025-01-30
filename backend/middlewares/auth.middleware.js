@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import dashboardLogin from "../models/dashboardloginSchema.js";
 import DoctorModel from "../models/doctor.model.js";
 import { ResponseError } from "../utils/error.js";
+import ReceptionistModel from "../models/receptionist.model.js";
 
 const verifyJwt = async (req, res, next) => {
   try {
@@ -87,38 +88,36 @@ const verifyDoctor = async (req, res, next) => {
   });
 };
 
-const checkDoctorRefreshToken = async (req, res) => {
-  const incomingRefreshToken =
-    req.cookies.refreshToken || req.body.refreshToken;
+const verifyReceptionist = async (req, res, next) => {
+  const token =
+    req.cookies?.accessToken ||
+    req.header("Authorization")?.replace("Bearer ", "");
 
-  if (!incomingRefreshToken)
-    throw new ResponseError(403, "Unauthorized request");
+  if (!token) {
+    return res
+      .status(401)
+      .json({ success: false, message: "No token provided" });
+  }
 
-  jwt.verify(
-    incomingRefreshToken,
-    process.env.REFRESH_TOKEN_SECRET,
-    (err, decodedToken) => {
-      if (err) {
-        if (err.name === "JsonWebTokenError")
-          throw new ResponseError(401, "Invalid access token");
-        if (err.name === "TokenExpiredError")
-          throw new ResponseError(401, "Access token expired");
-      }
-      DoctorModel.findById(decodedToken?._id).then((doctor) => {
-        if (!doctor) throw new ResponseError(403, "Invalid Refresh Token");
-
-        // if(incomingRefreshToken !== doctor.refreshToken)
-        //   throw new ResponseError("Refresh token is expired or used")
-
-        return res.status(201).json({
-          name: doctor.name,
-          email: doctor.email,
-          success: true,
-          message: "Valid Doctor",
-        });
-      });
+  // Verify the token
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decodedToken) => {
+    if (err) {
+      if (err.name === "JsonWebTokenError")
+        throw new ResponseError(401, "Invalid access token");
+      if (err.name === "TokenExpiredError")
+        throw new ResponseError(401, "Access token expired");
     }
-  );
+    // Find the doctor and exclude sensitive fields
+    ReceptionistModel.findById(decodedToken?._id)
+      .select("-password -refreshToken")
+      .then((receptionist) => {
+        if (!receptionist) throw new ResponseError(401, "Invalid access token");
+
+        // Attach the receptionist to the request object
+        req.receptionist = receptionist;
+        next();
+      });
+  });
 };
 
-export { verifyJwt, verifyDoctor, checkDoctorRefreshToken };
+export { verifyJwt, verifyDoctor, verifyReceptionist };

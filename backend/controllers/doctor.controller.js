@@ -1,3 +1,5 @@
+import jwt from "jsonwebtoken";
+
 import cookieOptions from "../constants.js";
 import DoctorModel from "../models/doctor.model.js";
 import ReceptionistModel from "../models/receptionist.model.js";
@@ -96,6 +98,40 @@ const doctorLogout = async (req, res) => {
     .json({ success: true, msg: "Logged out successfully" });
 };
 
+const checkDoctorRefreshToken = async (req, res) => {
+  const incomingRefreshToken =
+    req.cookies.refreshToken || req.body.refreshToken;
+
+  if (!incomingRefreshToken)
+    throw new ResponseError(403, "Unauthorized request");
+
+  jwt.verify(
+    incomingRefreshToken,
+    process.env.REFRESH_TOKEN_SECRET,
+    (err, decodedToken) => {
+      if (err) {
+        if (err.name === "JsonWebTokenError")
+          throw new ResponseError(401, "Invalid access token");
+        if (err.name === "TokenExpiredError")
+          throw new ResponseError(401, "Access token expired");
+      }
+      DoctorModel.findById(decodedToken?._id).then((doctor) => {
+        if (!doctor) throw new ResponseError(403, "Invalid Refresh Token");
+
+        // if(incomingRefreshToken !== doctor.refreshToken)
+        //   throw new ResponseError("Refresh token is expired or used")
+
+        return res.status(200).json({
+          name: doctor.name,
+          email: doctor.email,
+          success: true,
+          message: "Valid Doctor",
+        });
+      });
+    }
+  );
+};
+
 const changeDoctorPassword = async (req, res) => {
   const { email, password } = req.body;
 
@@ -170,6 +206,7 @@ export {
   doctorLogin,
   doctorRegister,
   doctorLogout,
+  checkDoctorRefreshToken,
   changeDoctorPassword,
   addReceptionist,
   changeReceptionistPassword,

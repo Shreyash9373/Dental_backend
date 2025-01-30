@@ -6,15 +6,13 @@ import {
   addReceptionist,
   changeDoctorPassword,
   changeReceptionistPassword,
+  checkDoctorRefreshToken,
   doctorLogin,
   doctorLogout,
   doctorRegister,
 } from "../controllers/doctor.controller.js";
 import { AsyncErrorHandler } from "../utils/AsyncErrorHandler.js";
-import {
-  checkDoctorRefreshToken,
-  verifyDoctor,
-} from "../middlewares/auth.middleware.js";
+import { verifyDoctor } from "../middlewares/auth.middleware.js";
 
 const doctorRouter = express.Router();
 
