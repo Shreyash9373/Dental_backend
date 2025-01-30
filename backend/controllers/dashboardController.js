@@ -2,26 +2,6 @@ import jwt from "jsonwebtoken"; // Missing import for jwt
 import dashboardLogin from "../models/dashboardloginSchema.js";
 import cookieOptions from "../constants.js";
 
-
-const genAccessAndRefreshTokens = async (userId) => {
-  try {
-    const user = await dashboardLogin.findById(userId);
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    const accesstoken = user.generateAccessTokens();
-    const refreshtoken = user.generateRefreshTokens();
-
-    user.refreshToken = refreshtoken;
-    await user.save({ validateBeforeSave: false });
-
-    return { accesstoken, refreshtoken };
-  } catch (error) {
-    throw new Error("Something went wrong while generating tokens");
-  }
-};
-
 const login = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -53,9 +33,8 @@ const login = async (req, res) => {
     );
 
     // Set cookies with tokens
-    const accessTokenOptions = cookieOptions('access');
-    const refreshTokenOptions = cookieOptions('refresh');
-
+    const accessTokenOptions = cookieOptions("access");
+    const refreshTokenOptions = cookieOptions("refresh");
 
     return res
       .status(200)
