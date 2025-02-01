@@ -11,6 +11,7 @@ import bodyParser from "body-parser"; // Import body-parser
 
 import doctorRouter from "./routes/doctorRoute.js";
 import receptionistRoutes from "./routes/receptionist.route.js";
+import patientRoutes from "./routes/patient.route.js";
 
 const app = express();
 const port = 4000;
@@ -49,9 +50,10 @@ app.get("/", (req, res) => {
 });
 
 //api endpoints
-app.use("/api/receptionist", receptionistRoutes);
-app.use("/api/doctor", doctorRouter);
-app.use("/api/patient", patientRouter);
+app.use("/api/receptionists", receptionistRoutes);
+app.use("/api/doctors", doctorRouter);
+app.use("/api/user", patientRouter);
+app.use("/api/patients", patientRoutes);
 app.use("/api/dashboard", dashboardRouter);
 
 app.use(errorHandler);

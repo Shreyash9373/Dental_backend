@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
-function generatePNR() {
+function generatePRN() {
   const MIN = 123_456; // Minimum 6-digit number
   const MAX = 999_999; // Maximum 6-digit number
   return Math.floor(Math.random() * (MAX - MIN + 1)) + MIN;
@@ -13,28 +13,46 @@ const patientSchema = new mongoose.Schema(
     prn: {
       type: Number,
       unique: true,
-      required: true,
     },
     name: {
       type: String,
       required: [true, "Name is required"],
       trim: true,
       lowercase: true,
-      unique: true,
       validate: {
         validator: function (value) {
           // Regex for validating alphanumeric names, 3-30 characters
-          return /^[a-zA-Z0-9]{3,30}$/.test(value);
+          return /^[a-zA-Z\s.]{3,30}$/.test(value);
         },
-        message: "Name must be 3-30 characters long and alphanumeric.",
+        message: "Name must be 3-30 characters long.",
+      },
+    },
+    mobile: {
+      type: String,
+      unique: true,
+      required: true,
+      validate: {
+        validator: (v) => {
+          return /^[0-9]{10}$/.test(v);
+        },
+      },
+    },
+    age: {
+      type: Number,
+      required: true,
+      validate: {
+        validator: (v) => {
+          return v > 0 && v < 110;
+        },
       },
     },
     email: {
       type: String,
-      required: true,
       unique: true,
       trim: true,
       lowercase: true,
+      required: false,
+      sparse: true, // This ensures the uniqueness constraint only applies when it's not null
       validate: {
         validator: function (value) {
           // Simple regex to check email format
@@ -44,41 +62,24 @@ const patientSchema = new mongoose.Schema(
         message: "Please provide a valid email address",
       },
     },
-    password: {
-      type: String,
-      required: [true, "Password is required"],
-      trim: true,
-      minlength: [8, "Password must be at least 8 characters long"],
-      validate: {
-        validator: function (value) {
-          // At least 1 uppercase, 1 lowercase, 1 number, and 1 special character
-          return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-            value
-          );
-        },
-        message:
-          "Password must have at least 8 characters, including one uppercase letter, one lowercase letter, one number, and one special character.",
-      },
-    },
-    refreshToken: {
-      type: String,
-      default: "",
-    },
   },
   { timestamps: true }
 );
+
+// text index on name, mobile and email
+patientSchema.index({ name: "text", email: "text" });
 
 // Pre-save hook to ensure the PNR is unique
 patientSchema.pre("save", async function (next) {
   if (this.isNew) {
     // only for new docs
-    let pnr = generatePNR();
+    let prn = generatePRN();
 
-    while (await mongoose.models.Patient.findOne({ pnr })) {
-      pnr = generatePNR();
+    while (await mongoose.models.Patient.findOne({ prn })) {
+      prn = generatePRN();
     }
 
-    this.pnr = pnr;
+    this.prn = prn;
   }
   next();
 });

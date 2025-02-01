@@ -13,9 +13,9 @@ const receptionistSchema = new mongoose.Schema(
       validate: {
         validator: function (value) {
           // Regex for validating alphanumeric names, 3-30 characters
-          return /^[a-zA-Z0-9]{3,30}$/.test(value);
+          return /^[a-zA-Z]{3,30}$/.test(value);
         },
-        message: "Name must be 3-30 characters long and alphanumeric.",
+        message: "Name must be 3-30 characters long.",
       },
     },
     email: {
