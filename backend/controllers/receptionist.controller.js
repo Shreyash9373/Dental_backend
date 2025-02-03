@@ -80,32 +80,21 @@ const checkReceptionistRefreshToken = async (req, res) => {
   if (!incomingRefreshToken)
     throw new ResponseError(403, "Unauthorized request");
 
-  jwt.verify(
+  const decodedToken = jwt.verify(
     incomingRefreshToken,
-    process.env.REFRESH_TOKEN_SECRET,
-    (err, decodedToken) => {
-      if (err) {
-        if (err.name === "JsonWebTokenError")
-          throw new ResponseError(401, "Invalid access token");
-        if (err.name === "TokenExpiredError")
-          throw new ResponseError(401, "Access token expired");
-      }
-      ReceptionistModel.findById(decodedToken?._id).then((receptionist) => {
-        if (!receptionist)
-          throw new ResponseError(403, "Invalid Refresh Token");
-
-        // if(incomingRefreshToken !== receptionist.refreshToken)
-        //   throw new ResponseError("Refresh token is expired or used")
-
-        return res.status(200).json({
-          name: receptionist.name,
-          email: receptionist.email,
-          success: true,
-          message: "Valid Receptionist",
-        });
-      });
-    }
+    process.env.REFRESH_TOKEN_SECRET
   );
+
+  const receptionist = await ReceptionistModel.findById(decodedToken?._id);
+  if (!receptionist) throw new ResponseError(403, "Invalid Refresh Token");
+
+  return res.status(200).json({
+    name: receptionist.name,
+    email: receptionist.email,
+    role: "receptionist",
+    success: true,
+    message: "Valid Receptionist",
+  });
 };
 
 export { receptionistLogin, receptionistLogout, checkReceptionistRefreshToken };

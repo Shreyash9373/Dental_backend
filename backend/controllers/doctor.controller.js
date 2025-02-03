@@ -105,31 +105,21 @@ const checkDoctorRefreshToken = async (req, res) => {
   if (!incomingRefreshToken)
     throw new ResponseError(403, "Unauthorized request");
 
-  jwt.verify(
+  const decodedToken = jwt.verify(
     incomingRefreshToken,
-    process.env.REFRESH_TOKEN_SECRET,
-    (err, decodedToken) => {
-      if (err) {
-        if (err.name === "JsonWebTokenError")
-          throw new ResponseError(401, "Invalid access token");
-        if (err.name === "TokenExpiredError")
-          throw new ResponseError(401, "Access token expired");
-      }
-      DoctorModel.findById(decodedToken?._id).then((doctor) => {
-        if (!doctor) throw new ResponseError(403, "Invalid Refresh Token");
-
-        // if(incomingRefreshToken !== doctor.refreshToken)
-        //   throw new ResponseError("Refresh token is expired or used")
-
-        return res.status(200).json({
-          name: doctor.name,
-          email: doctor.email,
-          success: true,
-          message: "Valid Doctor",
-        });
-      });
-    }
+    process.env.REFRESH_TOKEN_SECRET
   );
+
+  const doctor = await DoctorModel.findById(decodedToken?._id);
+  if (!doctor) throw new ResponseError(403, "Invalid Refresh Token");
+
+  return res.status(200).json({
+    name: doctor.name,
+    email: doctor.email,
+    role: "doctor",
+    success: true,
+    message: "Valid Doctor",
+  });
 };
 
 const changeDoctorPassword = async (req, res) => {

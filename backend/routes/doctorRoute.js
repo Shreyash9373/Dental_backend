@@ -16,7 +16,7 @@ import { verifyDoctor } from "../middlewares/auth.middleware.js";
 
 const doctorRouter = express.Router();
 
-// Prefix: /api/doctor
+// Prefix: /api/doctors
 doctorRouter.post("/login", AsyncErrorHandler(doctorLogin));
 doctorRouter.post("/register", AsyncErrorHandler(doctorRegister));
 doctorRouter.get("/logout", verifyDoctor, AsyncErrorHandler(doctorLogout));

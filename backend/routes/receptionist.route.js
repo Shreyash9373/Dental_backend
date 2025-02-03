@@ -19,11 +19,11 @@ import {
 import { AsyncErrorHandler } from "../utils/AsyncErrorHandler.js";
 const receptionistRoutes = express.Router();
 
-// Prefix: /api/receptionist
+// Prefix: /api/receptionists
 receptionistRoutes.post("/login", AsyncErrorHandler(receptionistLogin));
 receptionistRoutes.get(
   "/logout",
-  verifyReceptionist,
+  AsyncErrorHandler(verifyReceptionist),
   AsyncErrorHandler(receptionistLogout)
 );
 receptionistRoutes.get(
@@ -32,7 +32,11 @@ receptionistRoutes.get(
 );
 
 receptionistRoutes.post("/book-appointment", checkReception, bookAppointment);
-receptionistRoutes.post("/get-patient", verifyJwt, getPatient);
+receptionistRoutes.post(
+  "/get-patient",
+  AsyncErrorHandler(verifyJwt),
+  getPatient
+);
 receptionistRoutes.get("/get-Enquiry", checkReception, getEnquiry);
 receptionistRoutes.put("/update-patient", checkReception, updatePatient);
 receptionistRoutes.get("/available-slots", getAvailableSlots);
