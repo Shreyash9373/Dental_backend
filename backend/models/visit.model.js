@@ -1,25 +1,23 @@
 import mongoose, { Schema } from "mongoose";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import { ResponseError } from "../utils/error.js";
 
 // Payment schema for individual payments
 const paymentSchema = new mongoose.Schema({
-  paid: {
+  amount: {
     type: Number,
     required: true,
   },
   date: {
     type: Date,
-    required: true,
     default: Date.now,
   },
 });
 
 // Review schema
 const reviewSchema = new mongoose.Schema({
-  stars: {
+  rating: {
     type: Number,
-    required: false,
+    required: true,
     enum: [0, 1, 2, 3, 4, 5],
     validate: {
       validator: function (value) {
@@ -35,7 +33,7 @@ const reviewSchema = new mongoose.Schema({
   },
 });
 
-const treatmentSchema = new mongoose.Schema(
+const visitSchema = new mongoose.Schema(
   {
     doctor: {
       type: String,
@@ -57,8 +55,9 @@ const treatmentSchema = new mongoose.Schema(
       required: false,
     },
     payments: {
-      type: Array[paymentSchema],
+      type: [paymentSchema],
       required: true,
+      default: [],
     },
     paymentStatus: {
       type: String,
@@ -73,7 +72,6 @@ const treatmentSchema = new mongoose.Schema(
     totalAmount: {
       type: Number,
       required: true,
-      default: 0,
     },
     isDoctorVisiting: {
       type: Boolean,
@@ -88,5 +86,37 @@ const treatmentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const TreatmentModel = mongoose.model("Treatment", treatmentSchema);
-export default TreatmentModel;
+// pre hook to ensure data consistency when adding a payment
+visitSchema.pre("save", function (next) {
+  if (!this.isModified("payments")) next();
+  else {
+    // ensure that payedAmount reflects total amount of payments
+    const totalPaymentAmount = this.payments.reduce(
+      (sum, payment) => sum + payment.amount,
+      0
+    );
+    this.payedAmount = totalPaymentAmount;
+
+    // if totalAmount == payedAmount, change payemntStatus to PAID
+    if (this.payedAmount === this.totalAmount) this.paymentStatus = "PAID";
+    else this.paymentStatus = "PENDING";
+
+    next();
+    // if(this.totalAmount !== totalPaymentAmount)
+    //   next(new Error("Data inconsistency: 'totalAmount' should be equal to total amount of payments"));
+  }
+});
+
+visitSchema.methods.makePayment = function (amount) {
+  // ensure that sum of this amount and payedAmount does not exceed totalAmount
+  if (amount + this.payedAmount > this.totalAmount)
+    throw new ResponseError(400, "Payment exceeds 'totalAmount'");
+
+  // make payment
+  this.payments.push({ amount });
+
+  this.save();
+};
+
+const VisitModel = mongoose.model("Visit", visitSchema);
+export default VisitModel;

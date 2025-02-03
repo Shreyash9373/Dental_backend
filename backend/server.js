@@ -12,6 +12,7 @@ import bodyParser from "body-parser"; // Import body-parser
 import doctorRouter from "./routes/doctorRoute.js";
 import receptionistRoutes from "./routes/receptionist.route.js";
 import patientRoutes from "./routes/patient.route.js";
+import visitRouter from "./routes/visit.route.js";
 
 const app = express();
 const port = 4000;
@@ -55,6 +56,7 @@ app.use("/api/doctors", doctorRouter);
 app.use("/api/user", patientRouter);
 app.use("/api/patients", patientRoutes);
 app.use("/api/dashboard", dashboardRouter);
+app.use("/api/visits", visitRouter);
 
 app.use(errorHandler);
 

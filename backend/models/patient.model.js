@@ -66,9 +66,6 @@ const patientSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// text index on name, mobile and email
-patientSchema.index({ name: "text", email: "text" });
-
 // Pre-save hook to ensure the PNR is unique
 patientSchema.pre("save", async function (next) {
   if (this.isNew) {

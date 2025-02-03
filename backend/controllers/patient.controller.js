@@ -41,13 +41,6 @@ const getPatient = async (req, res) => {
 
 const searchPatient = async (req, res) => {
   const { name, mobile, email } = req.query;
-  // console.log(
-  //   mobile
-  //     .split("")
-  //     .map((char) => `(?=.*${char})`)
-  //     .join("")
-  // );
-  // console.log(RegExp(`(?=.*${mobile.split("").join(".*")})`));
 
   let filteredPatients = [];
   /* const filteredPatients = await PatientModel.find({
@@ -65,16 +58,25 @@ const searchPatient = async (req, res) => {
       { email: RegExp(email, "i") },
     ],
   }); */
-  if (name || email)
-    filteredPatients = await PatientModel.find({
-      $text: { $search: name ? name : email ? email : mobile },
-    });
-  else
-    filteredPatients = await PatientModel.find({
-      mobile: {
-        $regex: RegExp(`(?=.*${mobile.split("").join(".*")})`),
-      },
-    });
+
+  filteredPatients = await PatientModel.find({
+    $or: [
+      { name: RegExp(`(?=.*${name?.split("").join(".*")})`) },
+      { mobile: RegExp(`(?=.*${mobile?.split("").join(".*")})`) },
+      { email: RegExp(`(?=.*${email?.split("").join(".*")})`) },
+    ],
+  });
+
+  // if (name || email)
+  //   filteredPatients = await PatientModel.find({
+  //     $text: { $search: name ? name : email ? email : mobile },
+  //   });
+  // else
+  //   filteredPatients = await PatientModel.find({
+  //     mobile: {
+  //       $regex: RegExp(`(?=.*${mobile.split("").join(".*")})`),
+  //     },
+  //   });
 
   return res.status(200).json({
     success: true,
