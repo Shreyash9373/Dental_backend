@@ -30,7 +30,7 @@ const patientSchema = new mongoose.Schema(
     mobile: {
       type: String,
       unique: true,
-      required: true,
+      required: [true, "Mobile is required"],
       validate: {
         validator: (v) => {
           return /^[0-9]{10}$/.test(v);
@@ -39,7 +39,7 @@ const patientSchema = new mongoose.Schema(
     },
     age: {
       type: Number,
-      required: true,
+      required: [true, "Age is required"],
       validate: {
         validator: (v) => {
           return v > 0 && v < 110;
@@ -51,7 +51,6 @@ const patientSchema = new mongoose.Schema(
       unique: true,
       trim: true,
       lowercase: true,
-      required: false,
       sparse: true, // This ensures the uniqueness constraint only applies when it's not null
       validate: {
         validator: function (value) {

@@ -171,13 +171,52 @@ const updateDoctor = async (req, res) => {
   } else throw new ResponseError(400, "Unable to update");
 };
 
-const addReceptionist = async (req, res) => {
-  const { name, email, password } = req.body;
+const addMember = async (req, res) => {
+  const { role, email, password } = req.body;
 
   // validate payload
-  if (!name || !email || !password)
-    throw new ResponseError(400, "Name, email and password required");
+  if (!role || !email || !password)
+    throw new ResponseError(400, "Role, email and password required");
 
+  if (role === "doctor") {
+    // check for existing
+    const exisitingDoctor = await DoctorModel.findOne({ email });
+    if (exisitingDoctor)
+      throw new ResponseError(400, "This email is already registered");
+
+    // add to db
+    const doctor = await DoctorModel.create({
+      email,
+      password,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Doctor regsitered successfully",
+    });
+  } else if (role === "receptionist") {
+    // check for existing
+    const exisitingReceptionist = await ReceptionistModel.findOne({ email });
+    if (exisitingReceptionist)
+      throw new ResponseError(400, "This email is already registered");
+
+    // add to db
+    const receptionist = await ReceptionistModel.create({
+      email,
+      password,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Receptionist regsitered successfully",
+    });
+  } else {
+    return res.status(400).json({
+      success: false,
+      message: `Cannot add ${role}`,
+    });
+  }
+  /* 
   // check for existing receptionist
   const existingReceptionist = await ReceptionistModel.findOne({ email });
   if (existingReceptionist)
@@ -192,7 +231,7 @@ const addReceptionist = async (req, res) => {
   return res.status(201).json({
     success: true,
     msg: "Receptionist registered successfully",
-  });
+  }); */
 };
 
 const changeReceptionistPassword = async (req, res) => {
@@ -225,6 +264,6 @@ export {
   checkDoctorRefreshToken,
   getDoctorDetails,
   updateDoctor,
-  addReceptionist,
+  addMember,
   changeReceptionistPassword,
 };

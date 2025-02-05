@@ -29,7 +29,6 @@ const reviewSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: false,
   },
 });
 
@@ -37,7 +36,7 @@ const visitSchema = new mongoose.Schema(
   {
     doctor: {
       type: String,
-      required: [true, "Cannot have treatment without doctor"],
+      required: [true, "Cannot have visit without doctor"],
       trim: true,
       lowercase: true,
     },
@@ -48,11 +47,9 @@ const visitSchema = new mongoose.Schema(
     },
     condition: {
       type: String,
-      required: false,
     },
     prescription: {
       type: String,
-      required: false,
     },
     payments: {
       type: [paymentSchema],
