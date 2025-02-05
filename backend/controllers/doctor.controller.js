@@ -12,7 +12,6 @@ const doctorLogin = async (req, res) => {
   if (!email || !password)
     throw new ResponseError(400, "Email and password required");
 
-  //   check for admin
   const existingDoctor = await DoctorModel.findOne({ email });
   if (!existingDoctor)
     throw new ResponseError(
@@ -122,27 +121,54 @@ const checkDoctorRefreshToken = async (req, res) => {
   });
 };
 
-const changeDoctorPassword = async (req, res) => {
-  const { email, password } = req.body;
+const getDoctorDetails = async (req, res) => {
+  req.doctor["__v"] = undefined;
+  req.doctor["createdAt"] = undefined;
+  req.doctor["updatedAt"] = undefined;
 
-  if (!email || !password)
-    throw new ResponseError(400, "Invalid email or password");
+  return res.status(200).json({
+    success: true,
+    doctor: req.doctor,
+  });
+};
 
-  const doctor = await DoctorModel.findOne({ email });
+const updateDoctor = async (req, res) => {
+  let { name, email, password, qualification, experience, description } =
+    req.body;
+
+  experience = parseInt(experience);
+
+  if (experience !== undefined && experience && isNaN(experience)) {
+    throw new ResponseError(400, "Experience must be a number");
+  }
+
+  const doctor = req.doctor;
   if (!doctor)
     throw new ResponseError(
       400,
       "Invalid credentials or doctor does not exists"
     );
 
-  doctor.password = password;
+  if (name && name !== doctor.name) doctor.name = name;
+  if (email && email !== doctor.email) doctor.email = email;
+  if (password && password !== doctor.password) doctor.password = password;
+  if (qualification && qualification !== doctor.qualification)
+    doctor.qualification = qualification;
+  if (experience && experience !== doctor.experience)
+    doctor.experience = experience;
+  if (description && description !== doctor.description)
+    doctor.description = description;
+
+  // TODO: handle image save
+  // if (image && image !== doctor.image) doctor.image = image;
+
   const response = await doctor.save({ validateBeforeSave: false });
   // const response = await doctor.save();
   if (response) {
     return res
       .status(200)
-      .json({ success: true, message: "Password changed successfully" });
-  } else throw new ResponseError(400, "Unable to change password");
+      .json({ success: true, message: "Doctor update successfully" });
+  } else throw new ResponseError(400, "Unable to update");
 };
 
 const addReceptionist = async (req, res) => {
@@ -197,7 +223,8 @@ export {
   doctorRegister,
   doctorLogout,
   checkDoctorRefreshToken,
-  changeDoctorPassword,
+  getDoctorDetails,
+  updateDoctor,
   addReceptionist,
   changeReceptionistPassword,
 };

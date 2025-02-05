@@ -51,18 +51,13 @@ const doctorSchema = new mongoose.Schema(
     },
     qualification: {
       type: String,
-      // required: [true, "Doctor's qualification is required"],
-      default: "",
     },
     experience: {
       type: Number,
-      // required: [true, "Experience is required"],
       default: 1,
     },
     description: {
       type: String,
-      // required: true,
-      default: "",
     },
     refreshToken: {
       type: String,
