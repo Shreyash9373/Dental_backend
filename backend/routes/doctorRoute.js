@@ -3,7 +3,7 @@ import upload from "../config/multer.js";
 import { addEvent, addBlogs } from "../controllers/doctorController.js";
 import checkDoctor from "../middlewares/checkDoc.middleware.js";
 import {
-  addMember,
+  addAccount,
   updateDoctor,
   changeReceptionistPassword,
   checkDoctorRefreshToken,
@@ -11,6 +11,8 @@ import {
   doctorLogout,
   doctorRegister,
   getDoctorDetails,
+  getAllReceptionist,
+  deleteReceptionist,
 } from "../controllers/doctor.controller.js";
 import { AsyncErrorHandler } from "../utils/AsyncErrorHandler.js";
 import { verifyDoctor } from "../middlewares/auth.middleware.js";
@@ -39,7 +41,17 @@ doctorRouter.post(
 doctorRouter.post(
   "/add-member",
   AsyncErrorHandler(verifyDoctor),
-  AsyncErrorHandler(addMember)
+  AsyncErrorHandler(addAccount)
+);
+doctorRouter.get(
+  "/receptionists",
+  AsyncErrorHandler(verifyDoctor),
+  AsyncErrorHandler(getAllReceptionist)
+);
+doctorRouter.delete(
+  "/receptionists",
+  AsyncErrorHandler(verifyDoctor),
+  AsyncErrorHandler(deleteReceptionist)
 );
 doctorRouter.post(
   "/change-receptionist-password",

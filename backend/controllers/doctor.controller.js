@@ -171,7 +171,7 @@ const updateDoctor = async (req, res) => {
   } else throw new ResponseError(400, "Unable to update");
 };
 
-const addMember = async (req, res) => {
+const addAccount = async (req, res) => {
   const { role, email, password } = req.body;
 
   // validate payload
@@ -216,22 +216,25 @@ const addMember = async (req, res) => {
       message: `Cannot add ${role}`,
     });
   }
-  /* 
-  // check for existing receptionist
-  const existingReceptionist = await ReceptionistModel.findOne({ email });
-  if (existingReceptionist)
-    throw new ResponseError(400, "This email is already registered");
+};
 
-  // add receptionist to db
-  const receptionist = await ReceptionistModel.create({
-    name,
-    email,
-    password,
-  });
-  return res.status(201).json({
+const getAllReceptionist = async (req, res) => {
+  const receptionists = await ReceptionistModel.find();
+  return res.status(200).json({
     success: true,
-    msg: "Receptionist registered successfully",
-  }); */
+    receptionists,
+  });
+};
+
+const deleteReceptionist = async (req, res) => {
+  const { email } = req.body;
+  if (!email) throw new ResponseError(400, "Invalid email");
+
+  await ReceptionistModel.deleteOne({ email });
+  return res.status(200).json({
+    success: true,
+    message: "Receptionists deleted successfully",
+  });
 };
 
 const changeReceptionistPassword = async (req, res) => {
@@ -264,6 +267,8 @@ export {
   checkDoctorRefreshToken,
   getDoctorDetails,
   updateDoctor,
-  addMember,
+  addAccount,
+  getAllReceptionist,
+  deleteReceptionist,
   changeReceptionistPassword,
 };
