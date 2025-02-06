@@ -58,6 +58,9 @@ const doctorSchema = new mongoose.Schema(
     description: {
       type: String,
     },
+    image: {
+      type: String,
+    },
     refreshToken: {
       type: String,
       default: "",

@@ -35,6 +35,7 @@ doctorRouter.get(
 );
 doctorRouter.post(
   "/update",
+  upload.single("image"),
   AsyncErrorHandler(verifyDoctor),
   AsyncErrorHandler(updateDoctor)
 );

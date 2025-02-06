@@ -133,9 +133,10 @@ const getDoctorDetails = async (req, res) => {
 };
 
 const updateDoctor = async (req, res) => {
-  let { name, email, password, qualification, experience, description } =
+  let { name, email, password, qualification, experience, description, image } =
     req.body;
 
+  image = req.file ? req.file.path : undefined;
   experience = parseInt(experience);
 
   if (experience !== undefined && experience && isNaN(experience)) {
@@ -159,8 +160,7 @@ const updateDoctor = async (req, res) => {
   if (description && description !== doctor.description)
     doctor.description = description;
 
-  // TODO: handle image save
-  // if (image && image !== doctor.image) doctor.image = image;
+  if (image && image !== doctor.image) doctor.image = image;
 
   const response = await doctor.save({ validateBeforeSave: false });
   // const response = await doctor.save();
