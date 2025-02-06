@@ -1,5 +1,5 @@
-import eventSchema from "../models/event.js";
-import blogSchema from "../models/blog.js";
+import eventSchema from "../models/event.model.js";
+import blogSchema from "../models/blog.model.js";
 import cloudinary from "../config/cloudinary.js"; // Adjust the path to your Cloudinary configuration
 
 const addEvent = async (req, res) => {

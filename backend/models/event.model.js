@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const events = new mongoose.Schema(
+const eventSchema = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -31,6 +31,6 @@ const events = new mongoose.Schema(
   { timestamps: true }
 );
 
-const eventSchema = mongoose.model("Event", events);
+const EventModel = mongoose.model("Event", eventSchema);
 
-export default eventSchema;
+export default EventModel;

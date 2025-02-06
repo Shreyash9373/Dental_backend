@@ -1,6 +1,6 @@
-import enquirySchema from "../models/enquriySchema.js";
-import eventSchema from "../models/event.js";
-import blogSchema from "../models/blog.js";
+import enquirySchema from "../models/enquiry.model.js";
+import eventSchema from "../models/event.model.js";
+import blogSchema from "../models/blog.model.js";
 
 const saveEnquiry = async (req, res) => {
   try {

@@ -1,20 +1,25 @@
 import express from "express";
-import {
-  bookAppointment,
-  getPatient,
-  getEnquiry,
-  updatePatient,
-  getAvailableSlots,
-} from "../controllers/receptionController.js";
+// import {
+//   bookAppointment,
+//   getPatient,
+//   getEnquiry,
+//   updatePatient,
+//   getAvailableSlots,
+// } from "../controllers/receptionController.js";
 import {
   verifyJwt,
   verifyReceptionist,
 } from "../middlewares/auth.middleware.js";
-import checkReception from "../middlewares/checkRecep.middleware.js";
+// import checkReception from "../middlewares/checkRecep.middleware.js";
 import {
-  checkReceptionistRefreshToken,
   receptionistLogin,
   receptionistLogout,
+  checkReceptionistRefreshToken,
+  bookAppointment,
+  getAppointment,
+  getEnquiry,
+  updateAppointment,
+  getAvailableSlots,
 } from "../controllers/receptionist.controller.js";
 import { AsyncErrorHandler } from "../utils/AsyncErrorHandler.js";
 const receptionistRoutes = express.Router();
@@ -31,14 +36,29 @@ receptionistRoutes.get(
   AsyncErrorHandler(checkReceptionistRefreshToken)
 );
 
-receptionistRoutes.post("/book-appointment", checkReception, bookAppointment);
 receptionistRoutes.post(
-  "/get-patient",
-  AsyncErrorHandler(verifyJwt),
-  getPatient
+  "/book-appointment",
+  AsyncErrorHandler(verifyReceptionist),
+  AsyncErrorHandler(bookAppointment)
 );
-receptionistRoutes.get("/get-Enquiry", checkReception, getEnquiry);
-receptionistRoutes.put("/update-patient", checkReception, updatePatient);
-receptionistRoutes.get("/available-slots", getAvailableSlots);
+receptionistRoutes.post(
+  "/get-appointment",
+  AsyncErrorHandler(verifyJwt),
+  AsyncErrorHandler(getAppointment)
+);
+receptionistRoutes.get(
+  "/get-enquiry",
+  AsyncErrorHandler(verifyReceptionist),
+  AsyncErrorHandler(getEnquiry)
+);
+receptionistRoutes.put(
+  "/update-appointment",
+  AsyncErrorHandler(verifyReceptionist),
+  AsyncErrorHandler(updateAppointment)
+);
+receptionistRoutes.get(
+  "/available-slots",
+  AsyncErrorHandler(getAvailableSlots)
+);
 
 export default receptionistRoutes;

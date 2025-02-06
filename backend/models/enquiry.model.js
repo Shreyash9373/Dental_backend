@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const enquiry = new mongoose.Schema(
+const enquirySchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -37,6 +37,6 @@ const enquiry = new mongoose.Schema(
   { timestamps: true }
 );
 
-const enquirySchema = mongoose.model("Enquiry", enquiry);
+const EnquiryModel = mongoose.model("Enquiry", enquirySchema);
 
-export default enquirySchema;
+export default EnquiryModel;

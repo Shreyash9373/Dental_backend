@@ -1,5 +1,5 @@
-import appointmentSchema from "../models/appointmentSchema.js";
-import enquirySchema from "../models/enquriySchema.js";
+import appointmentSchema from "../models/appointment.model.js";
+import enquirySchema from "../models/enquiry.model.js";
 
 const bookAppointment = async (req, res) => {
   try {

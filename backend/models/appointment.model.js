@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-const appointment = new mongoose.Schema(
+
+const appointmentSchema = new mongoose.Schema(
   {
     fullName: {
       type: String,
@@ -57,5 +58,5 @@ const appointment = new mongoose.Schema(
   { timestamps: true }
 ); // Adds createdAt and updatedAt fields automatically
 
-const appointmentSchema = mongoose.model("Appointment", appointment);
-export default appointmentSchema;
+const AppointmentModel = mongoose.model("Appointment", appointmentSchema);
+export default AppointmentModel;
