@@ -40,7 +40,7 @@ const getPatient = async (req, res) => {
 };
 
 const searchPatient = async (req, res) => {
-  const { name, mobile, email } = req.query;
+  const { searchTerm } = req.query;
 
   let filteredPatients = [];
   /* const filteredPatients = await PatientModel.find({
@@ -61,9 +61,9 @@ const searchPatient = async (req, res) => {
 
   filteredPatients = await PatientModel.find({
     $or: [
-      { name: RegExp(`(?=.*${name?.split("").join(".*")})`) },
-      { mobile: RegExp(`(?=.*${mobile?.split("").join(".*")})`) },
-      { email: RegExp(`(?=.*${email?.split("").join(".*")})`) },
+      { name: RegExp(`(?=.*${searchTerm?.split("").join(".*")})`, "i") },
+      { mobile: RegExp(`(?=.*${searchTerm?.split("").join(".*")})`, "i") },
+      { email: RegExp(`(?=.*${searchTerm?.split("").join(".*")})`, "i") },
     ],
   });
 
