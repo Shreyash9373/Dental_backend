@@ -1,6 +1,17 @@
 import PatientModel from "../models/patient.model.js";
 import { ResponseError } from "../utils/error.js";
 
+const getPatient = async (req, res) => {
+  const { patientId } = req.params;
+
+  const patient = await PatientModel.findById(patientId);
+
+  return res.status(200).json({
+    success: true,
+    patient,
+  });
+};
+
 const addPatient = async (req, res) => {
   const { name, mobile, age, email } = req.body;
 
@@ -26,38 +37,10 @@ const addPatient = async (req, res) => {
   });
 };
 
-const getPatient = async (req, res) => {
-  const { prn } = req.params;
-
-  if (!prn) throw new ResponseError(404, "No patient with given PRN");
-
-  const patient = await PatientModel.findOne({ prn });
-
-  return res.status(200).json({
-    success: true,
-    patient,
-  });
-};
-
 const searchPatient = async (req, res) => {
   const { searchTerm } = req.query;
 
   let filteredPatients = [];
-  /* const filteredPatients = await PatientModel.find({
-    $or: [
-      { name: RegExp(name, "i") },
-      {
-        mobile: RegExp(
-          mobile
-            .split("")
-            .map((char) => `(?=.*${char})`)
-            .join(""),
-          "i"
-        ),
-      },
-      { email: RegExp(email, "i") },
-    ],
-  }); */
 
   filteredPatients = await PatientModel.find({
     $or: [
@@ -67,21 +50,35 @@ const searchPatient = async (req, res) => {
     ],
   });
 
-  // if (name || email)
-  //   filteredPatients = await PatientModel.find({
-  //     $text: { $search: name ? name : email ? email : mobile },
-  //   });
-  // else
-  //   filteredPatients = await PatientModel.find({
-  //     mobile: {
-  //       $regex: RegExp(`(?=.*${mobile.split("").join(".*")})`),
-  //     },
-  //   });
-
   return res.status(200).json({
     success: true,
     patients: filteredPatients,
   });
 };
 
-export { addPatient, getPatient, searchPatient };
+const updatePatient = async (req, res) => {
+  const { patientId } = req.params;
+  let { name, mobile, age, email } = req.body;
+  age = age ? parseInt(age) : undefined;
+
+  if (age !== undefined && isNaN(age)) {
+    throw new ResponseError(400, "Age must be a number");
+  }
+
+  const patient = await PatientModel.findById(patientId);
+
+  if (name && name !== patient.name) patient.name = name;
+  if (mobile && mobile !== patient.mobile) patient.mobile = mobile;
+  if (age && age !== patient.age) patient.age = age;
+  if (email && email !== patient.email) patient.email = email;
+
+  const result = await patient.save();
+  if (result)
+    return res.status(200).json({
+      success: true,
+      message: "Patient updated successfully",
+    });
+  else throw new ResponseError(400, "Something went wrong");
+};
+
+export { getPatient, addPatient, searchPatient, updatePatient };
