@@ -6,13 +6,13 @@ const doctorSchema = new mongoose.Schema(
   {
     name: {
       type: String,
+      required: true,
       trim: true,
-      lowercase: true,
+      // lowercase: true,
       unique: true,
       validate: {
         validator: function (value) {
-          // Regex for validating alphanumeric names, 3-30 characters
-          return /^[a-zA-Z]{3,30}$/.test(value);
+          return value.length > 3 && value.length < 30;
         },
         message: "Name must be 3-30 characters long.",
       },

@@ -38,7 +38,7 @@ const visitSchema = new mongoose.Schema(
       type: String,
       required: [true, "Cannot have visit without doctor"],
       trim: true,
-      lowercase: true,
+      // lowercase: true,
     },
     patientId: {
       type: Schema.Types.ObjectId,
@@ -58,8 +58,8 @@ const visitSchema = new mongoose.Schema(
     },
     paymentStatus: {
       type: String,
-      enum: ["UNPAID", "PENDING", "PAID"],
-      default: "UNPAID",
+      enum: ["PENDING", "PAID"],
+      default: "PENDING",
     },
     payedAmount: {
       type: Number,
@@ -82,6 +82,18 @@ const visitSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// pre hook to ensure total doesn't become less than paid
+visitSchema.pre("save", function (next) {
+  if (!this.isModified("totalAmount")) next();
+  else {
+    if (this.totalAmount < this.payedAmount)
+      throw new ResponseError(
+        400,
+        "Amount cannot become less than paid amount. Delete a payment if you think this is an mistake"
+      );
+  }
+});
 
 // pre hook to ensure data consistency when adding a payment
 visitSchema.pre("save", function (next) {
@@ -107,7 +119,7 @@ visitSchema.pre("save", function (next) {
 visitSchema.methods.makePayment = function (amount) {
   // ensure that sum of this amount and payedAmount does not exceed totalAmount
   if (amount + this.payedAmount > this.totalAmount)
-    throw new ResponseError(400, "Payment exceeds 'totalAmount'");
+    throw new ResponseError(400, "Payment exceeds total amount to be paid");
 
   // make payment
   this.payments.push({ amount });

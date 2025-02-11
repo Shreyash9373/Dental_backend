@@ -3,6 +3,28 @@ import PatientModel from "../models/patient.model.js";
 import VisitModel from "../models/visit.model.js";
 import { ResponseError } from "../utils/error.js";
 
+const getVisit = async (req, res) => {
+  const { visitId } = req.params;
+
+  const visit = await VisitModel.findById(visitId);
+  if (!visit) throw new ResponseError(400, "Visit does not exists");
+
+  return res.status(200).json({
+    success: true,
+    visit,
+  });
+};
+
+const getDoctors = async (req, res) => {
+  const doctors = await DoctorModel.find({}, { _id: 1, name: 1 });
+  if (!doctors) throw new ResponseError(400, "Visit does not exists");
+
+  return res.status(200).json({
+    success: true,
+    doctors,
+  });
+};
+
 const addVisit = async (req, res) => {
   // TODO: get all fields (also do this for create operation for all resources)
   const { doctor, patientId, condition, prescription, totalAmount } = req.body;
@@ -65,15 +87,15 @@ const addReview = async (req, res) => {
   });
 };
 
-const searchVisitByPRN = async (req, res) => {
-  const { prn } = req.params;
+const searchVisitByPatientId = async (req, res) => {
+  const { patientId } = req.params;
 
-  if (!prn) throw new ResponseError(400, "PRN is required");
-
-  const patientId = await PatientModel.findOne({ prn });
-  if (!patientId) throw new ResponseError(400, "No patient found!");
+  if (!patientId) throw new ResponseError(400, "Patient Id is required");
 
   const visits = await VisitModel.find({ patientId });
+  if (!visits) throw new ResponseError(400, "No patient found!");
+
+  // const visits = await VisitModel.find({ patientId });
 
   return res.status(200).json({
     success: true,
@@ -146,19 +168,34 @@ const updateVisit = async (req, res) => {
   const visit = await VisitModel.findById(visitId);
   if (!visit) throw new ResponseError(400, "Visit not found");
 
-  visit.doctor = doctor || visit.doctor;
-  visit.patientId = patientId || visit.patientId;
-  visit.condition = condition || visit.condition;
-  visit.prescription = prescription || visit.prescription;
-  visit.paymentStatus = paymentStatus || visit.paymentStatus;
-  visit.totalAmount = totalAmount || visit.totalAmount;
-  visit.isDoctorVisiting = isDoctorVisiting || visit.isDoctorVisiting;
+  // visit.doctor = doctor || visit.doctor;
+  // visit.patientId = patientId || visit.patientId;
+  // visit.condition = condition || visit.condition;
+  // visit.prescription = prescription || visit.prescription;
+  // visit.paymentStatus = paymentStatus || visit.paymentStatus;
+  // visit.totalAmount = totalAmount || visit.totalAmount;
+  // visit.isDoctorVisiting = isDoctorVisiting !== || visit.isDoctorVisiting;
+
+  if (doctor !== undefined && doctor !== visit.doctor) visit.doctor = doctor;
+  if (condition !== undefined && condition !== visit.condition)
+    visit.condition = condition;
+  if (prescription !== undefined && prescription !== visit.prescription)
+    visit.prescription = prescription;
+  if (paymentStatus !== undefined && paymentStatus !== visit.paymentStatus)
+    visit.paymentStatus = paymentStatus;
+  if (totalAmount !== undefined && totalAmount !== visit.totalAmount)
+    visit.totalAmount = totalAmount;
+  if (
+    isDoctorVisiting !== undefined &&
+    isDoctorVisiting !== visit.isDoctorVisiting
+  )
+    visit.isDoctorVisiting = isDoctorVisiting;
 
   await visit.save();
   return res.status(200).json({
     success: true,
     visit,
-    msg: "Visit updated",
+    message: "Visit updated",
   });
 };
 
@@ -175,10 +212,12 @@ const getAllReviews = async (req, res) => {
 };
 
 export {
+  getVisit,
+  getDoctors,
   addVisit,
   addPaymentForVisit,
   addReview,
-  searchVisitByPRN,
+  searchVisitByPatientId,
   searchUnpaidOrPendingStatusVisit,
   searchVisitsByDoctorId,
   searchVisit,

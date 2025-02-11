@@ -2,12 +2,14 @@ import express from "express";
 
 import { AsyncErrorHandler } from "../utils/AsyncErrorHandler.js";
 import {
+  getVisit,
+  getDoctors,
   addPaymentForVisit,
   addReview,
   addVisit,
   searchVisit,
   searchUnpaidOrPendingStatusVisit,
-  searchVisitByPRN,
+  searchVisitByPatientId,
   searchVisitsByDoctorId,
   updateVisit,
   getAllReviews,
@@ -16,6 +18,11 @@ import {
 const visitRouter = express.Router();
 
 // Prefix: /api/visits
+// get visit
+visitRouter.get("/visit/:visitId", AsyncErrorHandler(getVisit));
+// get visit
+visitRouter.get("/doctors", AsyncErrorHandler(getDoctors));
+
 // add visit
 visitRouter.post("/", AsyncErrorHandler(addVisit));
 
@@ -26,7 +33,10 @@ visitRouter.post("/review/:visitId", AsyncErrorHandler(addReview));
 visitRouter.post("/payment/:visitId", AsyncErrorHandler(addPaymentForVisit));
 
 // search visits for a particular patient (patient history)
-visitRouter.get("/patient/:prn", AsyncErrorHandler(searchVisitByPRN));
+visitRouter.get(
+  "/patient/:patientId",
+  AsyncErrorHandler(searchVisitByPatientId)
+);
 
 // search visits for a particular doctor
 visitRouter.get("/doctor/:doctorId", AsyncErrorHandler(searchVisitsByDoctorId));

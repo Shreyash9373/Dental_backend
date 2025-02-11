@@ -172,13 +172,15 @@ const updateDoctor = async (req, res) => {
 };
 
 const addAccount = async (req, res) => {
-  const { role, email, password } = req.body;
+  const { role, name, email, password } = req.body;
 
   // validate payload
   if (!role || !email || !password)
     throw new ResponseError(400, "Role, email and password required");
 
   if (role === "doctor") {
+    if (!name) throw new ResponseError(400, "Name for doctor is required");
+
     // check for existing
     const exisitingDoctor = await DoctorModel.findOne({ email });
     if (exisitingDoctor)
@@ -186,6 +188,7 @@ const addAccount = async (req, res) => {
 
     // add to db
     const doctor = await DoctorModel.create({
+      name,
       email,
       password,
     });
