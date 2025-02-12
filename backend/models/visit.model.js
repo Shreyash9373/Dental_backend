@@ -92,6 +92,7 @@ visitSchema.pre("save", function (next) {
         400,
         "Amount cannot become less than paid amount. Delete a payment if you think this is an mistake"
       );
+    else next();
   }
 });
 

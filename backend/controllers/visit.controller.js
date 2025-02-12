@@ -27,7 +27,19 @@ const getDoctors = async (req, res) => {
 
 const addVisit = async (req, res) => {
   // TODO: get all fields (also do this for create operation for all resources)
-  const { doctor, patientId, condition, prescription, totalAmount } = req.body;
+  let {
+    doctor,
+    patientId,
+    condition,
+    prescription,
+    totalAmount,
+    isDoctorVisiting,
+  } = req.body;
+
+  totalAmount = parseFloat(totalAmount);
+
+  if (isNaN(totalAmount) && totalAmount > 0)
+    throw new ResponseError(400, "Total amount must be greater than 0");
 
   const visit = await VisitModel.create({
     doctor,
@@ -35,11 +47,13 @@ const addVisit = async (req, res) => {
     condition,
     prescription,
     totalAmount,
+    isDoctorVisiting,
   });
 
   return res.status(201).json({
     success: true,
     visit,
+    message: "Visit added successfully",
   });
 };
 
