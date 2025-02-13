@@ -75,6 +75,32 @@ const addPaymentForVisit = async (req, res) => {
   });
 };
 
+const deletePaymentForVisit = async (req, res) => {
+  const { visitId } = req.params;
+  const { id } = req.body;
+
+  if (!id) throw new ResponseError(400, "Payment id required");
+
+  // const visit = await VisitModel.findByIdAndUpdate(visitId, {
+  //   $pull: { payments: { _id: id } },
+  // });
+  const visit = await VisitModel.findById(visitId);
+  if (!visit) throw new ResponseError(400, "Visit does not exists");
+
+  const payments = visit.payments.filter(
+    (payment) => payment._id.toString() !== id
+  );
+
+  visit.payments = payments;
+  visit.save();
+
+  return res.status(200).json({
+    success: true,
+    message: "Visit deleted successfully",
+    visit,
+  });
+};
+
 const addReview = async (req, res) => {
   const { visitId } = req.params;
   let { rating, description } = req.body;
@@ -230,6 +256,7 @@ export {
   getDoctors,
   addVisit,
   addPaymentForVisit,
+  deletePaymentForVisit,
   addReview,
   searchVisitByPatientId,
   searchUnpaidOrPendingStatusVisit,

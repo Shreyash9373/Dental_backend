@@ -13,6 +13,7 @@ import {
   searchVisitsByDoctorId,
   updateVisit,
   getAllReviews,
+  deletePaymentForVisit,
 } from "../controllers/visit.controller.js";
 
 const visitRouter = express.Router();
@@ -31,6 +32,12 @@ visitRouter.post("/review/:visitId", AsyncErrorHandler(addReview));
 
 // add payment
 visitRouter.post("/payment/:visitId", AsyncErrorHandler(addPaymentForVisit));
+
+// delete payment
+visitRouter.delete(
+  "/payment/:visitId",
+  AsyncErrorHandler(deletePaymentForVisit)
+);
 
 // search visits for a particular patient (patient history)
 visitRouter.get(
