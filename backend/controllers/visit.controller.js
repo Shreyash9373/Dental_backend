@@ -57,6 +57,18 @@ const addVisit = async (req, res) => {
   });
 };
 
+const deleteVisit = async (req, res) => {
+  const { visitId } = req.params;
+  if (!visitId) throw new ResponseError(400, "Visit does not exsits");
+
+  const result = await VisitModel.findByIdAndDelete(visitId);
+  return res.status(200).json({
+    success: true,
+    result,
+    message: "Visit deleted successfully",
+  });
+};
+
 const addPaymentForVisit = async (req, res) => {
   const { visitId } = req.params;
   let { amount } = req.body;
@@ -255,6 +267,7 @@ export {
   getVisit,
   getDoctors,
   addVisit,
+  deleteVisit,
   addPaymentForVisit,
   deletePaymentForVisit,
   addReview,
