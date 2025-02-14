@@ -113,6 +113,17 @@ const deletePaymentForVisit = async (req, res) => {
   });
 };
 
+const getReview = async (req, res) => {
+  const { visitId } = req.params;
+
+  const visit = await VisitModel.findById(visitId);
+  if (!visit) throw new ResponseError(404, "Visit not found");
+  else
+    return res.status(200).json({
+      review: visit.review ? visit.review : null,
+    });
+};
+
 const addReview = async (req, res) => {
   const { visitId } = req.params;
   let { rating, description } = req.body;
@@ -122,6 +133,7 @@ const addReview = async (req, res) => {
     throw new ResponseError(400, "Rating should be between 0-5");
 
   const visit = await VisitModel.findById(visitId);
+  if (!visit) throw new ResponseError(404, "Visit not found");
 
   if (visit.review)
     throw new ResponseError(400, "This visit already has a review");
@@ -270,6 +282,7 @@ export {
   deleteVisit,
   addPaymentForVisit,
   deletePaymentForVisit,
+  getReview,
   addReview,
   searchVisitByPatientId,
   searchUnpaidOrPendingStatusVisit,

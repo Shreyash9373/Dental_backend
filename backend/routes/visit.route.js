@@ -5,6 +5,7 @@ import {
   getVisit,
   getDoctors,
   addPaymentForVisit,
+  getReview,
   addReview,
   addVisit,
   deleteVisit,
@@ -31,8 +32,11 @@ visitRouter.post("/", AsyncErrorHandler(addVisit));
 // delete visit
 visitRouter.delete("/:visitId", AsyncErrorHandler(deleteVisit));
 
+// get review
+visitRouter.get("/:visitId/review", AsyncErrorHandler(getReview));
+
 // add review
-visitRouter.post("/review/:visitId", AsyncErrorHandler(addReview));
+visitRouter.post("/:visitId/review", AsyncErrorHandler(addReview));
 
 // add payment
 visitRouter.post("/payment/:visitId", AsyncErrorHandler(addPaymentForVisit));
