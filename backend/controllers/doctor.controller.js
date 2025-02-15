@@ -113,6 +113,7 @@ const checkDoctorRefreshToken = async (req, res) => {
   if (!doctor) throw new ResponseError(403, "Invalid Refresh Token");
 
   return res.status(200).json({
+    id: doctor._id,
     name: doctor.name,
     email: doctor.email,
     role: "doctor",

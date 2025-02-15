@@ -9,9 +9,18 @@ const getVisit = async (req, res) => {
   const visit = await VisitModel.findById(visitId);
   if (!visit) throw new ResponseError(400, "Visit does not exists");
 
+  // populate with doctor data if it exists
+  const doctor = await DoctorModel.findOne(
+    { _id: visit.doctor },
+    { _id: 1, name: 1 }
+  );
+
   return res.status(200).json({
     success: true,
-    visit,
+    visit: {
+      ...visit._doc,
+      doctor: doctor ? doctor : visit.doctor,
+    },
   });
 };
 
