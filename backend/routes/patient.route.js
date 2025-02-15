@@ -7,28 +7,28 @@ import {
   searchPatient,
   updatePatient,
 } from "../controllers/patient.controller.js";
-import { verifyReceptionist } from "../middlewares/auth.middleware.js";
+import { verifyJwt } from "../middlewares/auth.middleware.js";
 const patientRoutes = express.Router();
 
 // Prefix: /api/patients
 patientRoutes.get(
   "/patient/:patientId",
-  verifyReceptionist,
+  AsyncErrorHandler(verifyJwt),
   AsyncErrorHandler(getPatient)
 );
 patientRoutes.post(
   "/add-patient",
-  verifyReceptionist,
+  AsyncErrorHandler(verifyJwt),
   AsyncErrorHandler(addPatient)
 );
 patientRoutes.get(
   "/search-patient",
-  verifyReceptionist,
+  AsyncErrorHandler(verifyJwt),
   AsyncErrorHandler(searchPatient)
 );
 patientRoutes.put(
   "/:patientId",
-  verifyReceptionist,
+  AsyncErrorHandler(verifyJwt),
   AsyncErrorHandler(updatePatient)
 );
 

@@ -17,20 +17,38 @@ import {
   getAllReviews,
   deletePaymentForVisit,
 } from "../controllers/visit.controller.js";
+import { verifyJwt } from "../middlewares/auth.middleware.js";
 
 const visitRouter = express.Router();
 
 // Prefix: /api/visits
 // get visit
-visitRouter.get("/visit/:visitId", AsyncErrorHandler(getVisit));
-// get visit
-visitRouter.get("/doctors", AsyncErrorHandler(getDoctors));
+visitRouter.get(
+  "/visit/:visitId",
+  AsyncErrorHandler(verifyJwt),
+  AsyncErrorHandler(getVisit)
+);
+
+// get doctors
+visitRouter.get(
+  "/doctors",
+  AsyncErrorHandler(verifyJwt),
+  AsyncErrorHandler(getDoctors)
+);
 
 // add visit
-visitRouter.post("/", AsyncErrorHandler(addVisit));
+visitRouter.post(
+  "/",
+  AsyncErrorHandler(verifyJwt),
+  AsyncErrorHandler(addVisit)
+);
 
 // delete visit
-visitRouter.delete("/:visitId", AsyncErrorHandler(deleteVisit));
+visitRouter.delete(
+  "/:visitId",
+  AsyncErrorHandler(verifyJwt),
+  AsyncErrorHandler(deleteVisit)
+);
 
 // get review
 visitRouter.get("/:visitId/review", AsyncErrorHandler(getReview));
@@ -39,34 +57,53 @@ visitRouter.get("/:visitId/review", AsyncErrorHandler(getReview));
 visitRouter.post("/:visitId/review", AsyncErrorHandler(addReview));
 
 // add payment
-visitRouter.post("/payment/:visitId", AsyncErrorHandler(addPaymentForVisit));
+visitRouter.post(
+  "/payment/:visitId",
+  AsyncErrorHandler(verifyJwt),
+  AsyncErrorHandler(addPaymentForVisit)
+);
 
 // delete payment
 visitRouter.delete(
   "/payment/:visitId",
+  AsyncErrorHandler(verifyJwt),
   AsyncErrorHandler(deletePaymentForVisit)
 );
 
 // search visits for a particular patient (patient history)
 visitRouter.get(
   "/patient/:patientId",
+  AsyncErrorHandler(verifyJwt),
   AsyncErrorHandler(searchVisitByPatientId)
 );
 
 // search visits for a particular doctor
-visitRouter.get("/doctor/:doctorId", AsyncErrorHandler(searchVisitsByDoctorId));
+visitRouter.get(
+  "/doctor/:doctorId",
+  AsyncErrorHandler(verifyJwt),
+  AsyncErrorHandler(searchVisitsByDoctorId)
+);
 
 // search for visits with pending status
 visitRouter.get(
   "/pending",
+  AsyncErrorHandler(verifyJwt),
   AsyncErrorHandler(searchUnpaidOrPendingStatusVisit)
 );
 
 // search for visits based on prescription or condition
-visitRouter.get("/search", AsyncErrorHandler(searchVisit));
+visitRouter.get(
+  "/search",
+  AsyncErrorHandler(verifyJwt),
+  AsyncErrorHandler(searchVisit)
+);
 
 // update visit
-visitRouter.put("/:visitId", AsyncErrorHandler(updateVisit));
+visitRouter.put(
+  "/:visitId",
+  AsyncErrorHandler(verifyJwt),
+  AsyncErrorHandler(updateVisit)
+);
 
 // get all reviews
 visitRouter.get("/review", AsyncErrorHandler(getAllReviews));

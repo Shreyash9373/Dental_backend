@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
 
-import dashboardLogin from "../models/dashboardloginSchema.js";
 import DoctorModel from "../models/doctor.model.js";
 import { ResponseError } from "../utils/error.js";
 import ReceptionistModel from "../models/receptionist.model.js";
@@ -9,7 +8,6 @@ const verifyJwt = async (req, res, next) => {
   const token =
     req.cookies?.accessToken ||
     req.header("Authorization")?.replace("Bearer ", "");
-  console.log(token);
 
   if (!token) throw new ResponseError(401, "No token provided");
 
