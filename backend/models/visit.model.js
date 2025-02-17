@@ -30,6 +30,10 @@ const reviewSchema = new mongoose.Schema({
   description: {
     type: String,
   },
+  shown: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const visitSchema = new mongoose.Schema(

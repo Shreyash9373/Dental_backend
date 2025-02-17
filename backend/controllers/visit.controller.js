@@ -273,14 +273,50 @@ const updateVisit = async (req, res) => {
 };
 
 const getAllReviews = async (req, res) => {
+  let { rating } = req.query;
+
+  rating = parseInt(rating);
+
+  if (isNaN(rating)) throw new ResponseError(400, "Rating must be between 1-5");
+
   const reviews = await VisitModel.find(
-    {},
-    { "review.rating": 1, "review.description": 1, _id: 0 }
-  );
+    { "review.rating": rating },
+    {
+      "review.rating": 1,
+      "review.description": 1,
+      "review.shown": 1,
+      // _id: 1,
+    }
+  ).populate("patientId", { name: 1, _id: 0 });
+  // .select("patientId.mobile");
 
   res.status(200).json({
     success: true,
-    reviews: reviews.filter((r) => Object.keys(r._doc).length !== 0),
+    reviews: reviews
+      .filter(({ review }) => Object.keys(review._doc).length !== 0)
+      .map((review) => ({
+        visitId: review._id,
+        ...review.patientId._doc,
+        ...review.review._doc,
+      })),
+  });
+};
+
+const updateReview = async (req, res) => {
+  const { visitId } = req.params;
+  const { shown } = req.body;
+
+  const visit = await VisitModel.findById(visitId);
+  if (!visit) throw new ResponseError(404, "Visit not found");
+
+  if (visit.review.shown !== shown) {
+    visit.review.shown = shown;
+    visit.save();
+  }
+  return res.status(200).json({
+    success: true,
+    message: "Review added to main site",
+    visit,
   });
 };
 
@@ -299,4 +335,5 @@ export {
   searchVisit,
   updateVisit,
   getAllReviews,
+  updateReview,
 };
