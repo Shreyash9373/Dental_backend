@@ -320,6 +320,26 @@ const updateReview = async (req, res) => {
   });
 };
 
+const getAllShownReviews = async (req, res) => {
+  const reviews = (
+    await VisitModel.find(
+      { "review.shown": true },
+      { review: 1, _id: 0 }
+    ).populate("patientId", { name: 1, _id: 0 })
+  )
+    .filter((review) => Object.keys(review._doc).length !== 0)
+    .map((review) => {
+      review._doc._id = undefined;
+      review.review._doc._id = undefined;
+      review.review._doc.shown = undefined;
+      return { ...review.review._doc, ...review.patientId._doc };
+    });
+
+  return res.status(200).json({
+    reviews,
+  });
+};
+
 export {
   getVisit,
   getDoctors,
@@ -336,4 +356,5 @@ export {
   updateVisit,
   getAllReviews,
   updateReview,
+  getAllShownReviews,
 };

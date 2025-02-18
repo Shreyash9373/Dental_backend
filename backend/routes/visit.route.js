@@ -17,6 +17,7 @@ import {
   getAllReviews,
   deletePaymentForVisit,
   updateReview,
+  getAllShownReviews,
 } from "../controllers/visit.controller.js";
 import { verifyJwt } from "../middlewares/auth.middleware.js";
 
@@ -111,5 +112,8 @@ visitRouter.get("/reviews", AsyncErrorHandler(getAllReviews));
 
 // update review
 visitRouter.put("/:visitId/review", AsyncErrorHandler(updateReview));
+
+// get all shown reviews
+visitRouter.get("/reviews/shown", AsyncErrorHandler(getAllShownReviews));
 
 export default visitRouter;
