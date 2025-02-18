@@ -53,7 +53,7 @@ app.get("/", (req, res) => {
 //api endpoints
 app.use("/api/receptionists", receptionistRoutes);
 app.use("/api/doctors", doctorRouter);
-app.use("/api/user", patientRouter);
+app.use("/api/patient", patientRouter);
 app.use("/api/patients", patientRoutes);
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/visits", visitRouter);
