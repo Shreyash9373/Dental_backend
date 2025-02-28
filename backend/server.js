@@ -17,13 +17,7 @@ import visitRouter from "./routes/visit.route.js";
 const app = express();
 const port = 4000;
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://peakpuneit.com",
-  "https://admin.peakpuneit.com",
-  "http://147.93.30.210",
-  "http://localhost:5174",
-];
+const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(",") : [];
 
 app.use(
   cors({
